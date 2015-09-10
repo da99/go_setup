@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+#
+set -u -e -o pipefail
+
+action=$1
+shift
+
+case $action in
+  help)
+    bash_setup print_help $0
+    ;;
+
+  link)
+    # === Create a link from $(pwd) to $GOPATH/src:
+    # === $ go_setup link
+
+    name=$(basename $(pwd))
+    target_dir=$GOPATH/src/$GO_DIR_UUID
+    target=$target_dir/$name
+    if [[ -e $target  ]]; then
+      echo "=== Already exists: $target" 1>&2
+    else
+      mkdir -p $target_dir
+      ln -s $(pwd) $target
+      echo "=== Linked: $(pwd) -> $target" 1>&2
+    fi
+    ;;
+
+  *)
+    echo "Unknown option: $action" 1>&2
+    exit 1
+    ;;
+
+esac
